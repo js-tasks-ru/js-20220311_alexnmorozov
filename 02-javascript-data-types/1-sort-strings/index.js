@@ -6,7 +6,13 @@
  */
 export function sortStrings(arr, param = 'asc') {
   return arr.slice().sort((a, b) => {
-    let [first, last] = param == 'asc' ? [a, b] : [b, a];
+    let first;
+    let last;
+    if (param == 'asc') {
+      [first, last] = [a, b];
+    } else if (param == 'desc') {
+      [first, last] = [b, a];
+    }
     return first.localeCompare(last, ['ru', 'en'], { 'usage': 'sort', 'caseFirst': 'upper' });
   });
 }
