@@ -13,6 +13,6 @@ export function sortStrings(arr, param = 'asc') {
     } else if (param == 'desc') {
       [first, last] = [b, a];
     }
-    return first.localeCompare(last, ['ru', 'en'], { 'usage': 'sort', 'caseFirst': 'upper' });
+    return first.localeCompare(last, ['ru', 'en'], { 'caseFirst': 'upper' });
   });
 }
