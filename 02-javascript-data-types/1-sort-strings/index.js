@@ -8,9 +8,9 @@ export function sortStrings(arr, param = 'asc') {
   return arr.slice().sort((a, b) => {
     let first;
     let last;
-    if (param == 'asc') {
+    if (param === 'asc') {
       [first, last] = [a, b];
-    } else if (param == 'desc') {
+    } else if (param === 'desc') {
       [first, last] = [b, a];
     }
     return first.localeCompare(last, ['ru', 'en'], { 'caseFirst': 'upper' });
