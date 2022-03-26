@@ -19,10 +19,7 @@ export default class ColumnChart {
     this.element = null;
     this.render();
     if (this.data.length > 0) {
-      const elem = this.element.querySelector('.column-chart_loading');
-      if (elem) {
-        elem.className = 'column-chart';
-      }
+      this.element.className = 'column-chart';
     }
   }
   getTemplate() {
