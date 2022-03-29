@@ -11,7 +11,7 @@ export default class NotificationMessage {
   } = {}) {
     this.mesage = mesage;
     this.duration = duration;
-    this.type = types[type];
+    this.type = types[type] || types.success;
     this.init();
   }
 
@@ -28,13 +28,10 @@ export default class NotificationMessage {
       </div>
     `;
   }
-  show(container) {
+  show(container = document.body) {
     const active = NotificationMessage.active;
     if (active) {
       active.hide();
-    }
-    if (!container) {
-      container = document.body;
     }
     this._show(container);
     this.timerId = setTimeout(() => this._hide(), this.duration);
