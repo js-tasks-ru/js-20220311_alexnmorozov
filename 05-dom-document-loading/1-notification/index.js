@@ -1,16 +1,16 @@
-const types = {
-  success: 'success',
-  error: 'error'
-};
 export default class NotificationMessage {
   static active = null;
 
   constructor(mesage = '', {
     duration = 1000,
-    type = types.success
+    type = ''
   } = {}) {
     this.mesage = mesage;
     this.duration = duration;
+    const types = {
+      success: 'success',
+      error: 'error'
+    };
     this.type = types[type] || types.success;
     this.init();
   }

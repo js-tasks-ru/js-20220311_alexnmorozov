@@ -1,8 +1,3 @@
-const orders = {
-  asc: 1,
-  desc: -1
-};
-
 export default class SortableTable {
   constructor(headerConfig = [], data = []) {
     this.headerConfig = headerConfig;
@@ -11,6 +6,10 @@ export default class SortableTable {
   }
 
   sort(field, order) {
+    const orders = {
+      asc: 1,
+      desc: -1
+    };
     const sortOrder = orders[order];
     if (!sortOrder) {
       return;
@@ -48,15 +47,15 @@ export default class SortableTable {
     this.fillBody();
   }
   fillHeader() {
-    const headerHTML = this.headerConfig.reduce((result, item) => result += this.getColumnHeaderHTML(item), '');
+    const headerCells = this.headerConfig.map((item) => this.getColumnHeaderHTML(item));
     const div = document.createElement('div');
-    div.innerHTML = headerHTML;
+    div.innerHTML = headerCells.join('');
     this.subElements.header.append(...div.children);
   }
   fillBody() {
-    const rowsHTML = this.data.reduce((result, item) => result += this.getRowHTML(item), '');
+    const rows = this.data.map((item) => this.getRowHTML(item));
     const div = document.createElement('div');
-    div.innerHTML = rowsHTML;
+    div.innerHTML = rows.join('');
     this.subElements.body.append(...div.children);
   }
   getTableHTML() {
