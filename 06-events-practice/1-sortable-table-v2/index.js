@@ -1,12 +1,12 @@
 export default class SortableTable {
-  constructor(headersConfig, {
+  constructor(headersConfig = [], {
     data = [],
     sorted: {
       field = '',
       order
     } = {}
   } = {}) {
-    this.headerConfig = headersConfig || [];
+    this.headerConfig = headersConfig;
     this.data = [...data];
     this.init();
     this.sort(field, order);

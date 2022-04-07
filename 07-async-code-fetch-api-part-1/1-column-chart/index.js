@@ -21,14 +21,7 @@ export default class ColumnChart {
   }
 
   async update(from, to) {
-    const url = new URL(this.path, BACKEND_URL);
-    if (from) {
-      url.searchParams.append('from', from);
-    }
-    if (to) {
-      url.searchParams.append('to', to);
-    }
-    this.data = await fetchJson(url);
+    this.data = await this.loadData(from, to);
     const values = Object.values(this.data);
     if (values && values.length > 0) {
       this.subElements.body.innerHTML = this.getColumnTemplate(values);
@@ -37,6 +30,16 @@ export default class ColumnChart {
       this.element.className = 'column-chart';
     }
     return this.data;
+  }
+  async loadData(from, to) {
+    const url = new URL(this.path, BACKEND_URL);
+    if (from) {
+      url.searchParams.append('from', from);
+    }
+    if (to) {
+      url.searchParams.append('to', to);
+    }
+    return await fetchJson(url);
   }
   getTemplate() {
     return `
