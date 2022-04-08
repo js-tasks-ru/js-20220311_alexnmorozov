@@ -8,12 +8,12 @@ export default class SortableTable {
     url: path,
     chunkLength = 30,
     sorted: {
-      field,
-      order = 'desc'
+      id,
+      order = 'asc'
     } = {}
   } = {}) {
     this.headerConfig = headersConfig;
-    this.id = field;
+    this.id = id;
     this.order = order;
     this.path = path;
     this.isSortLocally = isSortLocally;
@@ -30,7 +30,7 @@ export default class SortableTable {
     if (!div) {
       return;
     }
-    const { id, order = this.order } = div.dataset;
+    const { id, order } = div.dataset;
     const reversedOrders = {
       asc: 'desc',
       desc: 'asc'
@@ -40,13 +40,11 @@ export default class SortableTable {
   }
   async onScroll() {
     const rect = this.element.getBoundingClientRect();
-    if (rect.bottom <= document.documentElement.clientHeight) {
+    if (rect.bottom <= document.documentElement.clientHeight && !this.isLoaded) {
+      this.isLoaded = true;
       await this.loadDataChunk();
-      if (this.id && this.order) {
-        this.sortOnClient();
-      } else {
-        this.updateTable();
-      }
+      this.isLoaded = false;
+      this.updateTable();
     }
   }
   sortOnClient(id = this.id, order = this.order) {
@@ -76,7 +74,8 @@ export default class SortableTable {
     this.id = id;
     this.order = order;
     this.data = [];
-    this.loadDataChunk();
+    await this.loadDataChunk();
+    this.updateTable();
   }
   async loadDataChunk() {
     const chunk = await this.loadData(this.id, this.order);
@@ -123,7 +122,7 @@ export default class SortableTable {
     this.fillHeader();
     await this.loadDataChunk();
     this.updateTable();
-    this.subElements.productsContainer.firstElementChild.className = 'sortable-table';
+    this.element.className = 'sortable-table';
     this.subscribeToEvents();
   }
   sort(id, order) {
@@ -147,17 +146,14 @@ export default class SortableTable {
   }
   getTableHTML() {
     return `
-      <div data-element="productsContainer" class="products-list__container">
-        <div class="sortable-table_empty">
-          <div data-element="header" class="sortable-table__header sortable-table__row"></div>
-          <div data-element="body" class="sortable-table__body"></div>
-          <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
+      <div class="sortable-table_empty">
+        <div data-element="header" class="sortable-table__header sortable-table__row"></div>
+        <div data-element="body" class="sortable-table__body"></div>
+        <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
 
-          <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
-            <div>
-              <p>No products satisfies your filter criteria</p>
-              <button type="button" class="button-primary-outline">Reset all filters</button>
-            </div>
+        <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
+          <div>
+            <p>Loading...</p>
           </div>
         </div>
       </div>
