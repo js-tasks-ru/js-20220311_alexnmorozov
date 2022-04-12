@@ -30,12 +30,17 @@ export default class ProductForm {
   }
 
   async render () {
-    const categories = await this.loadCategories();
-    let products;
-    if (this.productId) {
-      products = await this.loadProducs();
-    }
-    const product = products[0];
+    const defaultProduct = {
+      title: '',
+      description: '',
+      price: 100,
+      discount: 0,
+      quantity: 1,
+      status: 0
+    };
+    const categoriesPromise = this.loadCategories();
+    const productPromise = this.productId ? this.loadProducs().then(products => products[0]) : defaultProduct;
+    const [categories, product] = await Promise.all([categoriesPromise, productPromise]);
     const div = document.createElement('div');
     div.innerHTML = this.getTemplate(product, categories);
     this.element = div.firstElementChild;
