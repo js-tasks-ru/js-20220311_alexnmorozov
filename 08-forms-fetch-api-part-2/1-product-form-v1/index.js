@@ -103,9 +103,9 @@ export default class ProductForm {
       const formData = new FormData();
       formData.append("image", file);
       this.subElements.productForm.uploadImage.classList.toggle('is-loading');
-      let responce;
+      let responceData;
       try {
-        responce = await fetch("https://api.imgur.com/3/image", {
+        const responce = await fetch("https://api.imgur.com/3/image", {
           method: 'POST',
           headers: {
             Authorization: "Client-ID 28aaa2e823b03b1"
@@ -113,10 +113,11 @@ export default class ProductForm {
           referrer: '',
           body: formData
         });
+        responceData = (await responce.json()).data;
       } finally {
         this.subElements.productForm.uploadImage.classList.toggle('is-loading');
       }
-      const link = (await responce.json()).data.link;
+      const link = responceData.link;
       const name = file.name;
       const images = this.getImageList();
       images.push({ source: name, url: link });
@@ -143,10 +144,10 @@ export default class ProductForm {
       subcategory: form.elements.subcategory.value,
       title: form.elements.title.value,
       description: form.elements.description.value,
-      price: +form.elements.price.value,
-      discount: +form.elements.discount.value,
-      quantity: +form.elements.quantity.value,
-      status: +form.elements.status.value,
+      price: parseInt(form.elements.price.value),
+      discount: parseInt(form.elements.discount.value),
+      quantity: parseInt(form.elements.quantity.value),
+      status: parseInt(form.elements.status.value),
       images: this.getImageList()
     };
   }
