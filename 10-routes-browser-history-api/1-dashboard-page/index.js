@@ -54,14 +54,14 @@ export default class Page {
       this.ordersChart.loadData(from, to),
       this.salesChart.loadData(from, to),
       this.customersChart.loadData(from, to),
-      this.sortableTable.loadData(from, to)
+      this.sortableTable.setRange(from, to)
     ]);
   }
   createRangePicker(from, to) {
     return new RangePicker({ from, to });
   }
   createOrdersChart(from, to) {
-    return new ColumnChart({
+    const result = new ColumnChart({
       label: 'Заказы',
       link: '/sales',
       url: 'api/dashboard/orders',
@@ -70,9 +70,11 @@ export default class Page {
         to
       }
     });
+    result.element.classList.add('dashboard__chart_orders');
+    return result;
   }
   renderSalesChart(from, to) {
-    return new ColumnChart({
+    const result = new ColumnChart({
       label: 'Продажи',
       url: 'api/dashboard/sales',
       formatHeading: (data) => `$${(new Intl.NumberFormat('en-US')).format(data)}`,
@@ -81,9 +83,11 @@ export default class Page {
         to
       }
     });
+    result.element.classList.add('dashboard__chart_sales');
+    return result;
   }
   renderCustomersChart(from, to) {
-    return new ColumnChart({
+    const result = new ColumnChart({
       label: 'Клиенты',
       url: 'api/dashboard/customers',
       range: {
@@ -91,9 +95,12 @@ export default class Page {
         to
       }
     });
+    result.element.classList.add('dashboard__chart_customers');
+    return result;
   }
   renderSortableTable(from, to) {
     return new SortableTable(header, {
+      isSortLocally: true,
       url: `api/dashboard/bestsellers?from=${from}&to=${to}`,
       range: {
         from,

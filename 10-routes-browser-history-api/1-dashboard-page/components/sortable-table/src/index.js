@@ -88,7 +88,6 @@ export default class SortableTable {
   }
 
   async render() {
-    const {id, order} = this.sorted;
     const wrapper = document.createElement('div');
 
     wrapper.innerHTML = this.getTable();
@@ -98,16 +97,23 @@ export default class SortableTable {
     this.element = element;
     this.subElements = this.getSubElements(element);
 
-    const data = await this.loadData();
-
+    const { from, to } = this.range;
+    this.setRange(from, to);
     this.initEventListeners();
   }
 
-  async loadData(from = this.range.from, to = this.range.to) {
-    this.url.searchParams.set('_sort', this.sorted.id);
-    this.url.searchParams.set('_order', this.sorted.order);
-    this.url.searchParams.set('_start', this.start);
-    this.url.searchParams.set('_end', this.end);
+  async setRange(from, to) {
+    const {id, order} = this.sorted;
+    const data = await this.loadData(id, order, this.start, this.end, from, to);
+
+    this.renderRows(data);
+  }
+
+  async loadData(id, order, start = this.start, end = this.end, from = this.range.from, to = this.range.to) {
+    this.url.searchParams.set('_sort', id);
+    this.url.searchParams.set('_order', order);
+    this.url.searchParams.set('_start', start);
+    this.url.searchParams.set('_end', end);
     this.url.searchParams.set('from', from);
     this.url.searchParams.set('to', to);
 
@@ -117,7 +123,7 @@ export default class SortableTable {
 
     this.element.classList.remove('sortable-table_loading');
 
-    this.renderRows(data);
+    return data;
   }
 
   addRows(data) {
